@@ -1,5 +1,6 @@
 require_relative("../db/sql_runner")
 require_relative("./customer")
+require_relative("./screening")
 
 class Film
   attr_reader :id
@@ -74,4 +75,18 @@ class Film
     return SqlRunner.run(sql, values).first['count'].to_i
   end
 
+  # check for most popular screening
+
+  def most_popular_screening()
+    sql = "SELECT screenings.*, COUNT(tickets.id) AS number_of_tickets
+    FROM screenings
+    INNER JOIN tickets
+    ON screenings.id = tickets.screening_id
+    WHERE screenings.film_id = $1
+    GROUP BY screenings.id
+    ORDER BY number_of_tickets DESC"
+    values = [@id]
+    screening_hash = SqlRunner.run(sql, values).first
+    return Screening.new(screening_hash)
+  end
 end

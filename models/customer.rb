@@ -83,17 +83,33 @@ class Customer
   # end
 
   def buy_ticket_for_screening(screening)
-    sql = "SELECT films.price
-    FROM films
-    INNER JOIN screenings
-    ON films.id = screenings.film_id
-    WHERE screenings.id = $1"
+
+    sql = "SELECT seats FROM screenings WHERE id = $1"
     values = [screening.id]
-    price = SqlRunner.run(sql, values).first['price'].to_i
-    @funds -= price
-    self.update()
-    ticket = Ticket.new({'customer_id' => @id, 'screening_id' => screening.id})
-    ticket.save()
+    remaining_seats = SqlRunner.run(sql, values).first['seats'].to_i
+
+    if remaining_seats == 0
+      return "Sold Out"
+    else
+
+      sql = "SELECT films.price
+      FROM films
+      INNER JOIN screenings
+      ON films.id = screenings.film_id
+      WHERE screenings.id = $1"
+      values = [screening.id]
+      price = SqlRunner.run(sql, values).first['price'].to_i
+
+      @funds -= price
+      self.update()
+
+      ticket = Ticket.new({'customer_id' => @id, 'screening_id' => screening.id})
+      ticket.save()
+
+      screening.seats -= 1
+      screening.update
+      return "Ticket sold"
+    end
   end
 
 end

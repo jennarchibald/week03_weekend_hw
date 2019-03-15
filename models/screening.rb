@@ -6,7 +6,7 @@ class Screening
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @show_time = options['show_time']
-    @seats = options['seats']
+    @seats = options['seats'].to_i
     @film_id = options['film_id']
   end
 
