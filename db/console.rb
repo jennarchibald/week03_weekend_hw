@@ -31,12 +31,14 @@ film1.save()
 film2 = Film.new({'title' => 'The Matrix', 'price' => '8'})
 film2.save()
 
-screening1 = Screening.new({'show_time' => '20:00:00', 'seats' => '20', 'film_id' => film1.id})
+screening1 = Screening.new({'show_time' => '20:00:00', 'available_seats' => '20', 'film_id' => film1.id})
 screening1.save()
-screening2 = Screening.new({'show_time' => '20:00:00', 'seats' => '10', 'film_id' => film2.id})
+screening2 = Screening.new({'show_time' => '20:00:00', 'available_seats' => '10', 'film_id' => film2.id})
 screening2.save()
-screening3 = Screening.new({'show_time' => '09:00:00', 'seats' => '10', 'film_id' => film1.id})
+screening3 = Screening.new({'show_time' => '09:00:00', 'available_seats' => '10', 'film_id' => film1.id})
 screening3.save()
+screening4 = Screening.new({'show_time' => '09:00:00', 'available_seats' => '10', 'film_id' => film2.id})
+screening4.save()
 
 
 

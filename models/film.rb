@@ -80,7 +80,7 @@ class Film
   def most_popular_screening()
     sql = "SELECT screenings.*, COUNT(tickets.id) AS number_of_tickets
     FROM screenings
-    INNER JOIN tickets
+    LEFT JOIN tickets
     ON screenings.id = tickets.screening_id
     WHERE screenings.film_id = $1
     GROUP BY screenings.id
