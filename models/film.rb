@@ -1,4 +1,5 @@
 require_relative("../db/sql_runner")
+require_relative("./customer")
 
 class Film
   attr_reader :id
@@ -49,8 +50,13 @@ class Film
   # customers who have bought tickets for a film
 
   def customers()
-    sql = ""
-    values = @id
+    sql = "SELECT customers.*
+          FROM customers
+          INNER JOIN tickets
+          ON customers.id = tickets.customer_id
+          WHERE tickets.film_id = $1"
+    values = [@id]
     customers_hashes = SqlRunner.run(sql, values)
     return customers_hashes.map {|customer_hash| Customer.new(customer_hash)}
-end
+  end
+  end
