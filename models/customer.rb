@@ -1,5 +1,6 @@
 require_relative("../db/sql_runner")
 require_relative("./film")
+require_relative("./ticket")
 
 class Customer
   attr_reader :id
@@ -57,6 +58,26 @@ class Customer
     values = [@id]
     films_hashes = SqlRunner.run(sql, values)
     return films_hashes.map {|film_hash| Film.new(film_hash)}
+  end
+
+
+  # Check how many tickets were bought by a customer
+
+  def how_many_tickets()
+    sql = "SELECT COUNT(customer_id) FROM tickets WHERE customer_id = $1"
+    values = [@id]
+    return SqlRunner.run(sql, values).first['count'].to_i
+  end
+
+
+  # buying ticket for a film reducing customers funds
+
+  def buy_ticket_for_film(film)
+    price = film.price
+    @funds -= price
+    self.update()
+    ticket = Ticket.new({'customer_id' => @id, 'film_id' => film.id})
+    ticket.save()
   end
 
 end

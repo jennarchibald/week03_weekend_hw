@@ -59,4 +59,13 @@ class Film
     customers_hashes = SqlRunner.run(sql, values)
     return customers_hashes.map {|customer_hash| Customer.new(customer_hash)}
   end
+
+# Check how many customers are going to watch a certain film
+
+  def how_many_customers()
+    sql = "SELECT COUNT(film_id) FROM tickets WHERE film_id = $1"
+    values = [@id]
+    return SqlRunner.run(sql, values).first['count'].to_i
   end
+
+end
