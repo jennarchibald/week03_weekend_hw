@@ -51,19 +51,25 @@ class Film
 
   def customers()
     sql = "SELECT customers.*
-          FROM customers
-          INNER JOIN tickets
-          ON customers.id = tickets.customer_id
-          WHERE tickets.film_id = $1"
+    FROM customers
+    INNER JOIN tickets
+    ON customers.id = tickets.customer_id
+    INNER JOIN screenings
+    ON tickets.screening_id = screenings.id
+    WHERE screenings.film_id = $1"
     values = [@id]
     customers_hashes = SqlRunner.run(sql, values)
     return customers_hashes.map {|customer_hash| Customer.new(customer_hash)}
   end
 
-# Check how many customers are going to watch a certain film
+  # Check how many customers are going to watch a certain film
 
   def how_many_customers()
-    sql = "SELECT COUNT(film_id) FROM tickets WHERE film_id = $1"
+    sql = "SELECT COUNT (DISTINCT tickets.customer_id)
+    FROM screenings
+    INNER JOIN tickets
+    On screenings.id = tickets.screening_id
+    WHERE screenings.film_id = $1"
     values = [@id]
     return SqlRunner.run(sql, values).first['count'].to_i
   end
