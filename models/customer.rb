@@ -84,9 +84,7 @@ class Customer
 
   def buy_ticket_for_screening(screening)
 
-    sql = "SELECT available_seats FROM screenings WHERE id = $1"
-    values = [screening.id]
-    remaining_seats = SqlRunner.run(sql, values).first['available_seats'].to_i
+  remaining_seats = screening.available_seats()
 
     if remaining_seats == 0
       return "Sold Out"
@@ -101,7 +99,7 @@ class Customer
       price = SqlRunner.run(sql, values).first['price'].to_i
 
       @funds -= price
-      self.update()
+      update()
 
       ticket = Ticket.new({'customer_id' => @id, 'screening_id' => screening.id})
       ticket.save()
