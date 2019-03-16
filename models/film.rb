@@ -84,7 +84,8 @@ class Film
     ON screenings.id = tickets.screening_id
     WHERE screenings.film_id = $1
     GROUP BY screenings.id
-    ORDER BY number_of_tickets DESC"
+    ORDER BY number_of_tickets DESC
+    LIMIT 1"
     values = [@id]
     screening_hash = SqlRunner.run(sql, values).first
     return Screening.new(screening_hash)
